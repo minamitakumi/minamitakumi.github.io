@@ -4,104 +4,164 @@ title:  "关于C++调用LUA的小故事"
 date:   2017-06-18 01:35:38 +0530
 categories: jekyll update
 ---
-这是我的首篇博文，内容就简单一点，是关于C++调用LUA的一个小故事。
+这是我的首篇博文，内容就简单一点，是关于C++调用LUA的配置和一点点细节。
+
 好了，废话不多说（其实我还想多说- -）
 
 ----------------------------------------------------------------------------------------
 
 环境：
+
 操作系统：win8.1
+
 编译工具：vs2013
+
 LUA版本：lua5.3.4
+
 键盘：红轴机械键盘
+
 ----------------------------------------------------------------------------------------
 
 （1）首先，在下载一个LUA，地址是：http://www.lua.org/download.html
 
+![sample post]({{site.baseurl}}/images/image-blog-1/clipboard-1.png)
+
 
 （2）用VS建一个LUA静态库，命名为：lualib5_3_4
+
 2-1：
+
+![sample post]({{site.baseurl}}/images/image-blog-1/clipboard-2.png)
 
 
 2-2：
 
+![sample post]({{site.baseurl}}/images/image-blog-1/clipboard-3.png)
+
 
 2-3：
+
+![sample post]({{site.baseurl}}/images/image-blog-1/clipboard-4.png)
 
 
 2-4：把下载的LUA库的src下的头文件（*.h）引入
 
+![sample post]({{site.baseurl}}/images/image-blog-1/clipboard-5.png)
+
 
 2-5：
+
+![sample post]({{site.baseurl}}/images/image-blog-1/clipboard-6.png)
 
 
 2-6：把下载的LUA库的src下的源文件（*.c）引入
 
+![sample post]({{site.baseurl}}/images/image-blog-1/clipboard-7.png)
+
 
 2-7：
+
+![sample post]({{site.baseurl}}/images/image-blog-1/clipboard-8.png)
 
 
 2-8：设置项目属性
 
+![sample post]({{site.baseurl}}/images/image-blog-1/clipboard-9.png)
+
 
 2-9：设置“附加包含目录”为LUA库的src目录
+
+![sample post]({{site.baseurl}}/images/image-blog-1/clipboard-10.png)
 
 
 2-10：在“预处理器定义”添加：_CRT_SECURE_NO_WARNINGS
 
+![sample post]({{site.baseurl}}/images/image-blog-1/clipboard-11.png)
+
 
 2-11：在“编译为”设置为：编译为C代码（/TC）
+
+![sample post]({{site.baseurl}}/images/image-blog-1/clipboard-12.png)
 
 
 2-12：生成静态库
 
+![sample post]({{site.baseurl}}/images/image-blog-1/clipboard-13.png)
+
 
 2-13：生成成功
 
+![sample post]({{site.baseurl}}/images/image-blog-1/clipboard-14.png)
+
 
 （3）用VS建一个控制台应用程序，命名为：luaforctest
+
 3-1：
+
+![sample post]({{site.baseurl}}/images/image-blog-1/clipboard-15.png)
 
 
 3-2：
 
+![sample post]({{site.baseurl}}/images/image-blog-1/clipboard-16.png)
+
 
 3-3：添加刚建的LUA库项目（lualib5_3_4.vcxproj）
+
+![sample post]({{site.baseurl}}/images/image-blog-1/clipboard-17.png)
 
 
 3-4：
 
+![sample post]({{site.baseurl}}/images/image-blog-1/clipboard-18.png)
+
 
 3-5：设置项目属性
+
+![sample post]({{site.baseurl}}/images/image-blog-1/clipboard-19.png)
 
 
 3-6：设置“附加包含目录”为LUA库的src目录
 
+![sample post]({{site.baseurl}}/images/image-blog-1/clipboard-20.png)
+
 
 3-7：添加新引用
+
+![sample post]({{site.baseurl}}/images/image-blog-1/clipboard-21.png)
 
 
 3-8：添加新引用：选择刚生成的LUA静态库文件
 
+![sample post]({{site.baseurl}}/images/image-blog-1/clipboard-22.png)
+
 
 3-9：点击确定，项目设置完成
+
+![sample post]({{site.baseurl}}/images/image-blog-1/clipboard-23.png)
 
 
 3-10：添加main.cpp，以作稍后输入C++代码
 
+![sample post]({{site.baseurl}}/images/image-blog-1/clipboard-24.png)
+
 
 3-11：
 
+![sample post]({{site.baseurl}}/images/image-blog-1/clipboard-25.png)
 
 ----------------------------------------------------------------------------------------
 
 LUA代码如下：
+{% highlight lua %}
 teststr = "hello kitty 大车匙"
 secondstr =  "hi......"
+{% endhighlight %}
 
 ----------------------------------------------------------------------------------------
 
 C++代码如下：
+{% highlight c %}
 #include <iostream>
 #include <string.h>
 #include <stdlib.h>
@@ -162,6 +222,7 @@ int main()
 	system("pause");
 	return 0;
 }
+{% endhighlight %}
 
 ----------------------------------------------------------------------------------------
 
@@ -195,6 +256,7 @@ int iRet = luaL_dofile(L, LUA_FILE);
 
 运行结果：
 
+![sample post]({{site.baseurl}}/images/image-blog-1/clipboard-26.png)
 
 ----------------------------------------------------------------------------------------
 

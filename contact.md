@@ -3,6 +3,4 @@ layout: default
 title: Contact
 ---
 
-Contact me through email [hello@webjeda.com](mailto:hello@webjeda.com).
-
-For more themes checkout [Jekyll Themes](https://jekyll-themes.com).
+Contact me through email [wassery_zhou@163.com](wassery_zhou@163.com).
