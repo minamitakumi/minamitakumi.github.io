@@ -240,7 +240,7 @@ int iRet = luaL_loadfile(L, LUA_FILE);
 int iRet = luaL_loadfile(L, LUA_FILE) || lua_pcall(L, 0, 0, 0);
 {% endhighlight %}
 
-而其实也改为：
+而其实也可以改为：
 {% highlight c %}
 // 运行文件
 int iRet = luaL_dofile(L, LUA_FILE);
