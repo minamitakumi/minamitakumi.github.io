@@ -1,6 +1,6 @@
 ---
 layout: default
-title: About
+title: About - 
 ---
 
 This is Wassery Blog.
