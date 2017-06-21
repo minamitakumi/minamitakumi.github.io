@@ -3,8 +3,6 @@ layout: default
 title: About - 
 ---
 
-This is Wassery Blog.
-
 <!-- Language Selector -->
 <select style="background-color: #202020; color: #fbfbfb;" onchange= "onLanChange(this.options[this.options.selectedIndex].value)">
     <option value="0" selected> 中文 </option>
