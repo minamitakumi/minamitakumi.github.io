@@ -229,27 +229,37 @@ int main()
 像以上的调用，输出结果是：It's not a string.
 
 因为我们只是加载了文件，还没进行调用，于是把下面一句
+{% highlight c %}
 // 加载文件
 int iRet = luaL_loadfile(L, LUA_FILE);
-	
+{% endhighlight %}
+
 改为：
+{% highlight c %}
 // 加载并调用文件
 int iRet = luaL_loadfile(L, LUA_FILE) || lua_pcall(L, 0, 0, 0);
+{% endhighlight %}
 
 而其实也改为：
+{% highlight c %}
 // 运行文件
 int iRet = luaL_dofile(L, LUA_FILE);
-
+{% endhighlight %}
 因为luaL_dofile的作用就等同于luaL_loadfile加lua_pacll的作用。为啥？
+
 你看！lauxlib.h里有着这样的定义：
+{% highlight c %}
 #define luaL_dofile(L, fn) \
 	(luaL_loadfile(L, fn) || lua_pcall(L, 0, LUA_MULTRET, 0))
-
+{% endhighlight %}
 嗯，的确很相似。
-咦？lua_pcall的第三个参数不一样，第三个参数是指结果的个数，而加载文件本身是没有返回的，
-所以设置为0，而LUA_MULTRET是什么？其定义在lua.h，如下：
-#define LUA_MULTRET	(-1)
 
+咦？lua_pcall的第三个参数不一样，第三个参数是指结果的个数，而加载文件本身是没有返回的，
+
+所以设置为0，而LUA_MULTRET是什么？其定义在lua.h，如下：
+{% highlight c %}
+#define LUA_MULTRET	(-1)
+{% endhighlight %}
 这就说明“返回结果个数”把-1定义无值返回。
 
 ----------------------------------------------------------------------------------------
