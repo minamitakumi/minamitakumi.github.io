@@ -1,1 +1,14 @@
-theme: jekyll-theme-slate
+### your site title here
+
+title: The Dark Side
+
+permalink: /:title
+
+baseurl: 
+
+sass: 
+  style: compressed
+
+### exclude the instructions / write-up in the README.md
+exclude:
+- README.md
