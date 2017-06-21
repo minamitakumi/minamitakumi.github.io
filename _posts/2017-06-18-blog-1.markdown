@@ -1,0 +1,201 @@
+---
+layout: default
+title:  "关于C++调用LUA的小故事"
+date:   2017-06-18 01:35:38 +0530
+categories: jekyll update
+---
+这是我的首篇博文，内容就简单一点，是关于C++调用LUA的一个小故事。
+好了，废话不多说（其实我还想多说- -）
+
+----------------------------------------------------------------------------------------
+
+环境：
+操作系统：win8.1
+编译工具：vs2013
+LUA版本：lua5.3.4
+键盘：红轴机械键盘
+----------------------------------------------------------------------------------------
+
+（1）首先，在下载一个LUA，地址是：http://www.lua.org/download.html
+
+
+（2）用VS建一个LUA静态库，命名为：lualib5_3_4
+2-1：
+
+
+2-2：
+
+
+2-3：
+
+
+2-4：把下载的LUA库的src下的头文件（*.h）引入
+
+
+2-5：
+
+
+2-6：把下载的LUA库的src下的源文件（*.c）引入
+
+
+2-7：
+
+
+2-8：设置项目属性
+
+
+2-9：设置“附加包含目录”为LUA库的src目录
+
+
+2-10：在“预处理器定义”添加：_CRT_SECURE_NO_WARNINGS
+
+
+2-11：在“编译为”设置为：编译为C代码（/TC）
+
+
+2-12：生成静态库
+
+
+2-13：生成成功
+
+
+（3）用VS建一个控制台应用程序，命名为：luaforctest
+3-1：
+
+
+3-2：
+
+
+3-3：添加刚建的LUA库项目（lualib5_3_4.vcxproj）
+
+
+3-4：
+
+
+3-5：设置项目属性
+
+
+3-6：设置“附加包含目录”为LUA库的src目录
+
+
+3-7：添加新引用
+
+
+3-8：添加新引用：选择刚生成的LUA静态库文件
+
+
+3-9：点击确定，项目设置完成
+
+
+3-10：添加main.cpp，以作稍后输入C++代码
+
+
+3-11：
+
+
+----------------------------------------------------------------------------------------
+
+LUA代码如下：
+teststr = "hello kitty 大车匙"
+secondstr =  "hi......"
+
+----------------------------------------------------------------------------------------
+
+C++代码如下：
+#include <iostream>
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+using namespace std;
+
+extern "C"
+{
+#include "lua.h"
+#include "lauxlib.h"
+#include "lualib.h"
+}
+
+#define LUA_FILE "teststring.lua"
+
+int printLuaString()
+{
+	cout << "============= printLuaString =============" << endl;
+	// 打开一个LUA栈
+	lua_State *L = luaL_newstate();
+
+	// 加载LUA所有库
+	luaL_openlibs(L);
+
+	// 加载文件
+	int iRet = luaL_loadfile(L, LUA_FILE);
+	if (iRet)
+	{
+		cout << "Error load file." << endl;
+		lua_close(L);
+		return 0;
+	}
+	
+	lua_getglobal(L, "teststr");
+	iRet = lua_isstring(L, -1);
+	if (!iRet)
+	{
+		// 如果不是string类型或可以转为string类型，就显示错误信息
+		cout << "It's not a string." << endl;
+		// 关闭栈并退出
+		lua_close(L);
+		return 0;
+	}
+
+	// 从栈中调出字符串
+	string strValue = lua_tostring(L, -1);
+	// 打印信息
+	cout << "teststr => " << strValue.c_str() << endl;
+	// 关闭栈并退出
+	lua_close(L);
+	return 0;
+}
+
+int main()
+{
+	printLuaString();
+	system("pause");
+	return 0;
+}
+
+----------------------------------------------------------------------------------------
+
+像以上的调用，输出结果是：It's not a string.
+
+因为我们只是加载了文件，还没进行调用，于是把下面一句
+// 加载文件
+int iRet = luaL_loadfile(L, LUA_FILE);
+	
+改为：
+// 加载并调用文件
+int iRet = luaL_loadfile(L, LUA_FILE) || lua_pcall(L, 0, 0, 0);
+
+而其实也改为：
+// 运行文件
+int iRet = luaL_dofile(L, LUA_FILE);
+
+因为luaL_dofile的作用就等同于luaL_loadfile加lua_pacll的作用。为啥？
+你看！lauxlib.h里有着这样的定义：
+#define luaL_dofile(L, fn) \
+	(luaL_loadfile(L, fn) || lua_pcall(L, 0, LUA_MULTRET, 0))
+
+嗯，的确很相似。
+咦？lua_pcall的第三个参数不一样，第三个参数是指结果的个数，而加载文件本身是没有返回的，
+所以设置为0，而LUA_MULTRET是什么？其定义在lua.h，如下：
+#define LUA_MULTRET	(-1)
+
+这就说明“返回结果个数”把-1定义无值返回。
+
+----------------------------------------------------------------------------------------
+
+运行结果：
+
+
+----------------------------------------------------------------------------------------
+
+2017年6月18日 于广州。
