@@ -12,3 +12,9 @@ sass:
 ### exclude the instructions / write-up in the README.md
 exclude:
 - README.md
+
+plugins: ['jekyll-paginate']
+
+# Pages
+paginate: 5
+paginate_path: "page:num"
